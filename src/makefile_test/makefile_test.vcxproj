@@ -83,12 +83,65 @@
     </AdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <NMakeOutput>Mainboard_36.exe</NMakeOutput>
+    <NMakeOutput>
+    </NMakeOutput>
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>c:\toolchain\make\make.exe  build</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>c:\toolchain\make\make.exe  rebuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>c:\toolchain\make\make.exe  clean</NMakeCleanCommandLine>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cores\core_134\src\analog.c" />
+    <ClCompile Include="cores\core_134\src\AudioStream.cpp" />
+    <ClCompile Include="cores\core_134\src\avr_emulation.cpp" />
+    <ClCompile Include="cores\core_134\src\DMAChannel.cpp" />
+    <ClCompile Include="cores\core_134\src\eeprom.c" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial1.cpp" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial2.cpp" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial3.cpp" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial4.cpp" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial5.cpp" />
+    <ClCompile Include="cores\core_134\src\HardwareSerial6.cpp" />
+    <ClCompile Include="cores\core_134\src\IntervalTimer.cpp" />
+    <ClCompile Include="cores\core_134\src\IPAddress.cpp" />
+    <ClCompile Include="cores\core_134\src\keylayouts.c" />
+    <ClCompile Include="cores\core_134\src\main.cpp" />
+    <ClCompile Include="cores\core_134\src\math_helper.c" />
+    <ClCompile Include="cores\core_134\src\mk20dx128.c" />
+    <ClCompile Include="cores\core_134\src\new.cpp" />
+    <ClCompile Include="cores\core_134\src\nonstd.c" />
+    <ClCompile Include="cores\core_134\src\pins_teensy.c" />
+    <ClCompile Include="cores\core_134\src\Print.cpp" />
+    <ClCompile Include="cores\core_134\src\serial1.c" />
+    <ClCompile Include="cores\core_134\src\serial2.c" />
+    <ClCompile Include="cores\core_134\src\serial3.c" />
+    <ClCompile Include="cores\core_134\src\serial4.c" />
+    <ClCompile Include="cores\core_134\src\serial5.c" />
+    <ClCompile Include="cores\core_134\src\serial6.c" />
+    <ClCompile Include="cores\core_134\src\serial6_lpuart.c" />
+    <ClCompile Include="cores\core_134\src\ser_print.c" />
+    <ClCompile Include="cores\core_134\src\Stream.cpp" />
+    <ClCompile Include="cores\core_134\src\touch.c" />
+    <ClCompile Include="cores\core_134\src\usb_audio.cpp" />
+    <ClCompile Include="cores\core_134\src\usb_desc.c" />
+    <ClCompile Include="cores\core_134\src\usb_dev.c" />
+    <ClCompile Include="cores\core_134\src\usb_flightsim.cpp" />
+    <ClCompile Include="cores\core_134\src\usb_inst.cpp" />
+    <ClCompile Include="cores\core_134\src\usb_joystick.c" />
+    <ClCompile Include="cores\core_134\src\usb_keyboard.c" />
+    <ClCompile Include="cores\core_134\src\usb_mem.c" />
+    <ClCompile Include="cores\core_134\src\usb_midi.c" />
+    <ClCompile Include="cores\core_134\src\usb_mouse.c" />
+    <ClCompile Include="cores\core_134\src\usb_mtp.c" />
+    <ClCompile Include="cores\core_134\src\usb_rawhid.c" />
+    <ClCompile Include="cores\core_134\src\usb_seremu.c" />
+    <ClCompile Include="cores\core_134\src\usb_serial.c" />
+    <ClCompile Include="cores\core_134\src\usb_touch.c" />
+    <ClCompile Include="cores\core_134\src\WMath.cpp" />
+    <ClCompile Include="cores\core_134\src\WString.cpp" />
+    <ClCompile Include="cores\core_134\src\yield.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\myToggler\Toggler.cpp" />
   </ItemGroup>
@@ -103,6 +156,70 @@
     <None Include="toolchain\sed.exe" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cores\core_134\src\Arduino.h" />
+    <ClInclude Include="cores\core_134\src\arm_common_tables.h" />
+    <ClInclude Include="cores\core_134\src\arm_math.h" />
+    <ClInclude Include="cores\core_134\src\AudioStream.h" />
+    <ClInclude Include="cores\core_134\src\avr\eeprom.h" />
+    <ClInclude Include="cores\core_134\src\avr\interrupt.h" />
+    <ClInclude Include="cores\core_134\src\avr\io.h" />
+    <ClInclude Include="cores\core_134\src\avr\pgmspace.h" />
+    <ClInclude Include="cores\core_134\src\avr\power.h" />
+    <ClInclude Include="cores\core_134\src\avr\sleep.h" />
+    <ClInclude Include="cores\core_134\src\avr\wdt.h" />
+    <ClInclude Include="cores\core_134\src\avr_emulation.h" />
+    <ClInclude Include="cores\core_134\src\avr_functions.h" />
+    <ClInclude Include="cores\core_134\src\binary.h" />
+    <ClInclude Include="cores\core_134\src\Client.h" />
+    <ClInclude Include="cores\core_134\src\core_cm4.h" />
+    <ClInclude Include="cores\core_134\src\core_cm4_simd.h" />
+    <ClInclude Include="cores\core_134\src\core_cmInstr.h" />
+    <ClInclude Include="cores\core_134\src\core_id.h" />
+    <ClInclude Include="cores\core_134\src\core_pins.h" />
+    <ClInclude Include="cores\core_134\src\DMAChannel.h" />
+    <ClInclude Include="cores\core_134\src\elapsedMillis.h" />
+    <ClInclude Include="cores\core_134\src\HardwareSerial.h" />
+    <ClInclude Include="cores\core_134\src\IntervalTimer.h" />
+    <ClInclude Include="cores\core_134\src\IPAddress.h" />
+    <ClInclude Include="cores\core_134\src\keylayouts.h" />
+    <ClInclude Include="cores\core_134\src\kinetis.h" />
+    <ClInclude Include="cores\core_134\src\math_helper.h" />
+    <ClInclude Include="cores\core_134\src\mk20dx128.h" />
+    <ClInclude Include="cores\core_134\src\new.h" />
+    <ClInclude Include="cores\core_134\src\pins_arduino.h" />
+    <ClInclude Include="cores\core_134\src\Print.h" />
+    <ClInclude Include="cores\core_134\src\Printable.h" />
+    <ClInclude Include="cores\core_134\src\Server.h" />
+    <ClInclude Include="cores\core_134\src\ser_print.h" />
+    <ClInclude Include="cores\core_134\src\SPIFIFO.h" />
+    <ClInclude Include="cores\core_134\src\Stream.h" />
+    <ClInclude Include="cores\core_134\src\Udp.h" />
+    <ClInclude Include="cores\core_134\src\usb_audio.h" />
+    <ClInclude Include="cores\core_134\src\usb_desc.h" />
+    <ClInclude Include="cores\core_134\src\usb_dev.h" />
+    <ClInclude Include="cores\core_134\src\usb_flightsim.h" />
+    <ClInclude Include="cores\core_134\src\usb_joystick.h" />
+    <ClInclude Include="cores\core_134\src\usb_keyboard.h" />
+    <ClInclude Include="cores\core_134\src\usb_mem.h" />
+    <ClInclude Include="cores\core_134\src\usb_midi.h" />
+    <ClInclude Include="cores\core_134\src\usb_mouse.h" />
+    <ClInclude Include="cores\core_134\src\usb_mtp.h" />
+    <ClInclude Include="cores\core_134\src\usb_names.h" />
+    <ClInclude Include="cores\core_134\src\usb_rawhid.h" />
+    <ClInclude Include="cores\core_134\src\usb_seremu.h" />
+    <ClInclude Include="cores\core_134\src\usb_serial.h" />
+    <ClInclude Include="cores\core_134\src\usb_touch.h" />
+    <ClInclude Include="cores\core_134\src\usb_undef.h" />
+    <ClInclude Include="cores\core_134\src\util\atomic.h" />
+    <ClInclude Include="cores\core_134\src\util\crc16.h" />
+    <ClInclude Include="cores\core_134\src\util\delay.h" />
+    <ClInclude Include="cores\core_134\src\util\parity.h" />
+    <ClInclude Include="cores\core_134\src\WCharacter.h" />
+    <ClInclude Include="cores\core_134\src\WConstants.h" />
+    <ClInclude Include="cores\core_134\src\wiring.h" />
+    <ClInclude Include="cores\core_134\src\wiring_private.h" />
+    <ClInclude Include="cores\core_134\src\WProgram.h" />
+    <ClInclude Include="cores\core_134\src\WString.h" />
     <ClInclude Include="src\DelayTimer.h" />
     <ClInclude Include="intellisense.h" />
     <ClInclude Include="lib\core_134\avr\eeprom.h" />

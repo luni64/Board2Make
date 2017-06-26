@@ -13,7 +13,7 @@ CORE_SRC	:= $(CORE_BASE)/src
 CORE_LIB	:= core.a
 
 TOOLCHAIN	:= c:/toolchain
-GCC_BIN		:= $(TOOLCHAIN)/gcc/gcc-arm-none-eabi-4_8-2014q3-20140805-win32/bin 
+GCC_BIN		:= $(TOOLCHAIN)/gcc/gcc-arm-none-eabi-4_8-2014q3-20140805-win32/bin
 TEENSY_BIN	:= $(TOOLCHAIN)/teensy
 
 INCLUDE		:= -I./$(SRC) -I./$(CORE_SRC)
