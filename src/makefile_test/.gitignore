@@ -6,6 +6,10 @@
 *.lo
 *.o
 *.obj
+*.elf
+*.hex
+*.lst
+*.log
 
 # Precompiled Headers
 *.gch

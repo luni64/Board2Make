@@ -1,2 +1,62 @@
-﻿  cleaning user binaries...
-  cleaning core binaries...
+﻿  [ASM]	obj/src/memcpy-armv7m.o
+  [ASM]	obj/src/memset.o
+  [CC]	src/serial5.c
+  [CC]	src/usb_keyboard.c
+  [CC]	src/usb_seremu.c
+  [CC]	src/usb_midi.c
+  [CC]	src/usb_mem.c
+  [CC]	src/usb_touch.c
+  [CC]	src/serial6_lpuart.c
+  [CC]	src/eeprom.c
+  [CC]	src/mk20dx128.c
+  [CC]	src/usb_rawhid.c
+  [CC]	src/analog.c
+  [CC]	src/math_helper.c
+  [CC]	src/pins_teensy.c
+  [CC]	src/ser_print.c
+  [CC]	src/serial2.c
+  [CC]	src/serial6.c
+  [CC]	src/touch.c
+  [CC]	src/serial4.c
+  [CC]	src/keylayouts.c
+  [CC]	src/usb_dev.c
+  [CC]	src/usb_mtp.c
+  [CC]	src/usb_serial.c
+  [CC]	src/usb_mouse.c
+  [CC]	src/serial1.c
+  [CC]	src/usb_joystick.c
+  [CC]	src/usb_desc.c
+  [CC]	src/serial3.c
+  [CC]	src/nonstd.c
+  [CXX]	src/HardwareSerial4.cpp
+  [CXX]	src/HardwareSerial5.cpp
+  [CXX]	src/main.cpp
+  [CXX]	src/yield.cpp
+  [CXX]	src/WMath.cpp
+  [CXX]	src/AudioStream.cpp
+  [CXX]	src/IntervalTimer.cpp
+  [CXX]	src/usb_audio.cpp
+  [CXX]	src/avr_emulation.cpp
+  [CXX]	src/HardwareSerial2.cpp
+  [CXX]	src/usb_inst.cpp
+  [CXX]	src/Print.cpp
+  [CXX]	src/WString.cpp
+  [CXX]	src/HardwareSerial1.cpp
+  [CXX]	src/usb_flightsim.cpp
+  [CXX]	src/DMAChannel.cpp
+  [CXX]	src/HardwareSerial3.cpp
+  [CXX]	src/new.cpp
+  [CXX]	src/Stream.cpp
+  [CXX]	src/IPAddress.cpp
+  [CXX]	src/HardwareSerial6.cpp
+  [AR]	core.a
+  teensy core library built successfully 
+  
+  [CXX]	src/main.cpp	
+  [CXX]	src/myToggler/Toggler.cpp	
+  [LD]	makeTest.elf
+  user code built successfully 
+  
+  [HEX]	makeTest.elf
+     text	   data	    bss	    dec	    hex	filename
+    16124	   2452	   2520	  21096	   5268	makeTest.elf

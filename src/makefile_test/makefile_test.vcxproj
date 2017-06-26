@@ -93,6 +93,7 @@
     <ClCompile Include="src\myToggler\Toggler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="cores\core_134\makefile" />
     <None Include="makefile" />
     <None Include="teensy.mk" />

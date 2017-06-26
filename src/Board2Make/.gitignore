@@ -5,6 +5,9 @@
 *.suo
 *.user
 *.sln.docstates
+*.opensdf
+*.sdf
+*.log
 
 # Build results
 [Dd]ebug/
