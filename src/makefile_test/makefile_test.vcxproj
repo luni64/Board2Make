@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{12D76495-0C7D-43AF-8FD1-E46DF1C78155}</ProjectGuid>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>MakeFileProj</Keyword>
+    <ProjectName>makefile_test</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeOutput>
+    </NMakeOutput>
+    <OutDir>.\bin</OutDir>
+    <IntDir>.</IntDir>
+    <NMakeBuildCommandLine>c:\toolchain\make\make.exe  build</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>c:\toolchain\make\make.exe  rebuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>c:\toolchain\make\make.exe  clean</NMakeCleanCommandLine>
+    <NMakeIncludeSearchPath>$(MSBuildProjectDirectory);$(MSBuildProjectDirectory)\lib\core_134</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(MSBuildProjectDirectory)/intellisense.h</NMakeForcedIncludes>
+    <IncludePath>C:\toolchain\gcc\gcc-arm-none-eabi-4_8-2014q3-20140805-win32\arm-none-eabi\include;C:\toolchain\gcc\gcc-arm-none-eabi-4_8-2014q3-20140805-win32\arm-none-eabi\include\c++\4.8.4;C:\toolchain\gcc\gcc-arm-none-eabi-4_8-2014q3-20140805-win32\arm-none-eabi\include\c++\4.8.4\arm-none-eabi;$(ProjectDir)\cores\core_134\src</IncludePath>
+    <NMakePreprocessorDefinitions>
+    </NMakePreprocessorDefinitions>
+    <AdditionalOptions>
+    </AdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeOutput>Mainboard_36.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\myToggler\Toggler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cores\core_134\makefile" />
+    <None Include="makefile" />
+    <None Include="teensy.mk" />
+    <None Include="toolchain\libiconv2.dll" />
+    <None Include="toolchain\libintl3.dll" />
+    <None Include="toolchain\regex2.dll" />
+    <None Include="toolchain\sed.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\DelayTimer.h" />
+    <ClInclude Include="intellisense.h" />
+    <ClInclude Include="lib\core_134\avr\eeprom.h" />
+    <ClInclude Include="lib\core_134\avr\interrupt.h" />
+    <ClInclude Include="lib\core_134\avr\io.h" />
+    <ClInclude Include="lib\core_134\avr\pgmspace.h" />
+    <ClInclude Include="lib\core_134\avr\power.h" />
+    <ClInclude Include="lib\core_134\avr\sleep.h" />
+    <ClInclude Include="lib\core_134\avr\wdt.h" />
+    <ClInclude Include="lib\core_134\util\atomic.h" />
+    <ClInclude Include="lib\core_134\util\crc16.h" />
+    <ClInclude Include="lib\core_134\util\delay.h" />
+    <ClInclude Include="lib\core_134\util\parity.h" />
+    <ClInclude Include="src\myToggler\Toggler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="cores\core_134\core.a" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
