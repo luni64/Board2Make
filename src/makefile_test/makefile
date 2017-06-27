@@ -6,33 +6,33 @@ TARGET = makeTest
 #************************************************************************
 # PATHS and FILES
 #************************************************************************
-SRC			:= src
-BIN			:= obj
-CORE_BASE	:= cores/core_134
-CORE_SRC	:= $(CORE_BASE)/src
-CORE_LIB	:= core.a
+SRC             := src
+BIN             := obj
+CORE_BASE       := cores/core_134
+CORE_SRC        := $(CORE_BASE)/src
+CORE_LIB        := core.a
 
-TOOLCHAIN	:= c:/toolchain
-GCC_BIN		:= $(TOOLCHAIN)/gcc/gcc-arm-none-eabi-4_8-2014q3-20140805-win32/bin
-TEENSY_BIN	:= $(TOOLCHAIN)/teensy
+TOOLCHAIN       := c:/toolchain
+GCC_BIN	        := $(TOOLCHAIN)/gcc/gcc-arm-none-eabi-4_8-2014q3-20140805-win32/bin
+TEENSY_BIN      := $(TOOLCHAIN)/teensy
 
-INCLUDE		:= -I./$(SRC) -I./$(CORE_SRC)
+INCLUDE         := -I./$(SRC) -I./$(CORE_SRC)
 
 #************************************************************************
 # BINARIES
 #************************************************************************
-CC			:= $(GCC_BIN)/arm-none-eabi-gcc
-CXX			:= $(GCC_BIN)/arm-none-eabi-g++
-AR			:= $(GCC_BIN)/arm-none-eabi-ar
-OBJCOPY		:= $(GCC_BIN)/arm-none-eabi-objcopy
-SIZE		:= $(GCC_BIN)/arm-none-eabi-size
-OBJDUMP		:= $(GCC_BIN)/arm-none-eabi-objdump
-SED_EXE		:= $(TOOLCHAIN)/sed.exe
+CC              := $(GCC_BIN)/arm-none-eabi-gcc
+CXX             := $(GCC_BIN)/arm-none-eabi-g++
+AR              := $(GCC_BIN)/arm-none-eabi-ar
+OBJCOPY         := $(GCC_BIN)/arm-none-eabi-objcopy
+SIZE            := $(GCC_BIN)/arm-none-eabi-size
+OBJDUMP         := $(GCC_BIN)/arm-none-eabi-objdump
+SED_EXE         := $(TOOLCHAIN)/sed.exe
 
 # Reformat gcc error messages for correct parsing by VS
-SED_SCRIPT	:= "s,/,\\,g;
-SED_SCRIPT	+= s/:\([0-9][0-9]*\):\([0-9][0-9]*\):/(\1,\2): /g"
-SED			:= "$(SED_EXE)" -e $(SED_SCRIPT)
+SED_SCRIPT      := "s,/,\\,g;
+SED_SCRIPT      += s/:\([0-9][0-9]*\):\([0-9][0-9]*\):/(\1,\2): /g"
+SED             := "$(SED_EXE)" -e $(SED_SCRIPT)
 
 #************************************************************************
 # Load Compiler and Linker Flags
@@ -50,12 +50,12 @@ export CC  CXX  AR  CORE_LIB  CPP_FLAGS  C_FLAGS  S_FLAGS  AR_FLAGS   #export va
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
-C_FILES		:= $(call rwildcard,$(SRC)/,*.c)
-CPP_FILES	:= $(call rwildcard,$(SRC)/,*.cpp)
-S_FILES		:= $(call rwildcard,$(SRC)/,*.S)
+C_FILES         := $(call rwildcard,$(SRC)/,*.c)
+CPP_FILES       := $(call rwildcard,$(SRC)/,*.cpp)
+S_FILES         := $(call rwildcard,$(SRC)/,*.S)
 
-OBJECTS		:= $(S_FILES:.s=.o) $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o)
-OBJ			:= $(foreach src,$(OBJECTS), $(BIN)/$(src))
+OBJECTS         := $(S_FILES:.s=.o) $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o)
+OBJ             := $(foreach src,$(OBJECTS), $(BIN)/$(src))
 
 
 #$(info $$OBJ is [${OBJ}])
