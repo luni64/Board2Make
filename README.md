@@ -26,9 +26,9 @@ The VS solution also includes a simple example makefile project for compiling a 
 Quick instructions (detailed instructions tbd)
 - The makefile in the project assumes gcc, the teensy tools, make.exe and sed.exe in '''c:\toolchain''. Make sure to adapt the paths in the  makefile to fit your needs.
 - You can get the required binaries here: 
-  - GCC 4.8[https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update](https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update) for Teensyduino < 1.37
+  - GCC 4.8 [https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update](https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update) for Teensyduino < 1.37
   - Make: [http://gnuwin32.sourceforge.net/packages/make.htm](http://gnuwin32.sourceforge.net/packages/make.htm)
-  - Sed: [http://gnuwin32.sourceforge.net/packages/sed.htm](http://gnuwin32.sourceforge.net/packages/sed.htm)
+  - Sed:  [http://gnuwin32.sourceforge.net/packages/sed.htm](http://gnuwin32.sourceforge.net/packages/sed.htm)
 - Make sure to adapt the paths in the properties of the makefile project (right click on the makefile_test project, and select properities)
 
 
