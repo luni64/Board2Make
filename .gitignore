@@ -48,3 +48,4 @@ Temporary Items
 *.sdf
 *.sdf
 src/Board2Make.sdf
+/src/.vs/Board2Make/v15

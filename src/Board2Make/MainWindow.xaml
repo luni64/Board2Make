@@ -30,12 +30,12 @@
                         <Label Content="Board:" Width="100" />
                         <ComboBox ItemsSource="{Binding boardVMs}" DisplayMemberPath="boardName" Width="220" SelectedItem="{Binding selectedBoard}" />
                     </StackPanel>
-                    <ItemsControl ItemsSource="{Binding selectedBoard.optionSets}" Margin="10,0,10,10">
+                    <ItemsControl ItemsSource="{Binding selectedBoard.optionSetVMs}" Margin="10,0,10,10">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
-                                    <Label Content="{Binding displayName}" Width="100" />
-                                    <ComboBox ItemsSource="{Binding Options}" DisplayMemberPath="optionID"  Width="220" SelectedItem="{Binding selectedOption}"/>
+                                    <Label Content="{Binding name}" Width="100" />
+                                    <ComboBox ItemsSource="{Binding options}" DisplayMemberPath="name"  Width="220" SelectedItem="{Binding selectedOption}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

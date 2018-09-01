@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ViewModel;
 
-namespace Model
+namespace Board2Make.Model
 {
-    
-
     class FileContent
     {
         public IEnumerable<Board> boards { get; private set; }
         public IEnumerable<Menu> menus { get; private set; }
 
         public bool ParseError { get; private set; }
-        public bool CoreError { get; private set; }
+        //public bool CoreError { get; private set; }
 
         public FileContent(string fileName)
         {
