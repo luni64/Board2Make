@@ -31,16 +31,17 @@ namespace Board2Make
         private void OpenInput(object sender, RoutedEventArgs e)
         {
             var dc = DataContext as ViewModel.ViewModel;
+                 
 
             var dlg = new OpenFileDialog();
-            if (File.Exists(dc.inputFilename))
+            if (File.Exists(dc.boardTxt_filename))
             {
-                dlg.FileName = Path.GetFileName(dc.inputFilename);
-                dlg.InitialDirectory = Path.GetDirectoryName(dc.inputFilename);
+                dlg.FileName = Path.GetFileName(dc.boardTxt_filename);
+                dlg.InitialDirectory = Path.GetDirectoryName(dc.boardTxt_filename);
             }
             if (dlg.ShowDialog() != false)
             {
-                dc.inputFilename = dlg.FileName;
+                dc.boardTxt_filename = dlg.FileName;
             }
         }
 

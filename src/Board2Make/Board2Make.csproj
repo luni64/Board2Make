@@ -54,6 +54,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -76,16 +77,22 @@
     <Compile Include="Model\BuildEntry.cs" />
     <Compile Include="Model\Entry.cs" />
     <Compile Include="Model\FileContent.cs" />
+    <Compile Include="Model\FileHelpers.cs" />
     <Compile Include="Model\Menu.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Model\Option.cs" />
     <Compile Include="Model\OptionSet.cs" />
+    <Compile Include="Model\PropertiesJson.cs" />
+    <Compile Include="Model\tasksJson.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\BoardVM.cs" />
     <Compile Include="ViewModel\OptionSetVM.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
+    <Compile Include="Views\PathSelector.xaml.cs">
+      <DependentUpon>PathSelector.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +107,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PathSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
