@@ -49,3 +49,7 @@ Temporary Items
 *.sdf
 src/Board2Make.sdf
 /src/.vs/Board2Make/v15
+/src/packages/Microsoft.Net.Compilers.2.9.0
+*.config
+*.db
+/src/Board2Make.VC.VC.opendb
