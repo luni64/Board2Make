@@ -9,6 +9,17 @@
         <vm:ViewModel/>
     </Window.DataContext>
 
+    <Window.Resources>
+        <Style TargetType="FrameworkElement" x:Key="ValidatingControl">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <!--<Setter Property="Background" Value="Blue"/>-->
+                    <Setter Property="ToolTip" Value="{Binding  Path=(Validation.Errors)[0].ErrorContent, RelativeSource={x:Static RelativeSource.Self}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="20" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400"/>
@@ -27,35 +38,35 @@
                 <StackPanel Grid.Column="0" Grid.Row="0">
                     <TextBlock Text="Project Folder" FontWeight="Bold"/>
                     <StackPanel Width="auto" Margin="20,5,0,15" HorizontalAlignment="Stretch">
-                        <local:PSelector SelectedPath="{Binding  projectPath}" isFolderDialog="True" />
+                        <local:PSelector SelectedPath="{Binding  projectPath, ValidatesOnDataErrors=True}" isFolderDialog="True" />
                     </StackPanel>
 
                     <RadioButton x:Name="radioButton"  Content="Quick Setup" FontWeight="Bold" IsChecked="{Binding quickSetup}" />
                     <StackPanel Width="auto" Margin="20,5,0,15" HorizontalAlignment="Stretch"  IsEnabled="{Binding IsChecked, ElementName=radioButton}" >
                         <Label   Content="Select an Arduino Folder" HorizontalAlignment="Left" FontSize="10" Padding="0" />
-                        <local:PSelector SelectedPath="{Binding arduinoPath}" isFolderDialog="True" />
+                        <local:PSelector SelectedPath="{Binding arduinoPath, ValidatesOnDataErrors=True}" isFolderDialog="True" />
                     </StackPanel>
 
                     <RadioButton x:Name="radioButton1"  Content="Expert Setup" FontWeight="Bold"/>
                     <StackPanel Width="auto" Margin="20,5,0,15" HorizontalAlignment="Stretch"  IsEnabled="{Binding IsChecked, ElementName=radioButton1}" >
                         <Label   Content="Path to boards.txt" FontSize="10" Padding="0" />
-                        <local:PSelector SelectedPath="{Binding boardTxtPath }" />
+                        <local:PSelector SelectedPath="{Binding boardTxtPath, ValidatesOnDataErrors=True}" />
                         <CheckBox Content="Copy to project folder? (recommended)" FontSize="10"/>
 
                         <Label   Content="Path to Teensy Core Library" FontSize="10" Padding="0" Margin="0,15,0,0" />
-                        <local:PSelector SelectedPath="{Binding corePath}" isFolderDialog="True"  />
+                        <local:PSelector SelectedPath="{Binding corePath, ValidatesOnDataErrors=True}" isFolderDialog="True"  />
                         <CheckBox Content="Copy to project folder (recommended)" FontSize="10"/>
 
                         <Label   Content="Compiler Folder" FontSize="10" Padding="0" Margin="0,15,0,0" />
-                        <local:PSelector SelectedPath="{Binding compilerPath}" isFolderDialog="True" />
+                        <local:PSelector SelectedPath="{Binding compilerPath, ValidatesOnDataErrors=True}" isFolderDialog="True" />
                     </StackPanel>
 
                     <TextBlock Text="Tools" FontWeight="Bold"/>
                     <StackPanel Width="auto" Margin="20,5,0,15" HorizontalAlignment="Stretch" >
                         <Label   Content="Path to make.exe (required)" FontSize="10" Padding="0" />
-                        <local:PSelector SelectedPath="{Binding  makePath}" />
+                        <local:PSelector SelectedPath="{Binding  makePath, ValidatesOnDataErrors=True}" />
                         <Label   Content="Path to TyCommander (optional)" FontSize="10" Padding="0" Margin="0,10,0,0" />
-                        <local:PSelector SelectedPath="{Binding  uploadTyPath}" isFolderDialog="True" />
+                        <local:PSelector SelectedPath="{Binding  uploadTyPath, ValidatesOnDataErrors=True}" isFolderDialog="True" />
                     </StackPanel>
 
 

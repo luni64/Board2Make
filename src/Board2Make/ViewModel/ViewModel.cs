@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace ViewModel
 {
-    public class ViewModel : BaseViewModel
+    public class ViewModel : BaseViewModel, IDataErrorInfo
     {
         public RelayCommand cmdSave { get; private set; }
         void doCmdSave(object o)
@@ -22,6 +23,45 @@ namespace ViewModel
                 }
             }
         }
+
+
+        #region IDataErrorInfo ------------------------------------------------
+
+        public string Error
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                string error;
+
+                switch (columnName)
+                {
+                    case "projectPath":
+                        error = model.projectBase.ValidationResult;
+                        break;
+
+                    case "arduinoPath":
+                        error = quickSetup ? model.arduinoBase.ValidationResult : null;
+                        break;
+
+                    default:
+                        error = null;
+                        break;
+                }
+                return error;
+
+
+            }
+        }
+        #endregion
+
 
         #region Properties ------------------------------------------------------
         public String makefile => model.makefile;
@@ -127,7 +167,11 @@ namespace ViewModel
         public bool quickSetup
         {
             get => _quickSetup;
-            set => SetProperty(ref _quickSetup, value);
+            set
+            {
+                SetProperty(ref _quickSetup, value);
+                OnPropertyChanged("ArduinoPath");
+            }
         }
         bool _quickSetup = true;
 
