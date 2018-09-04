@@ -39,7 +39,7 @@
                     <RadioButton x:Name="radioButton1"  Content="Expert Setup" FontWeight="Bold"/>
                     <StackPanel Width="auto" Margin="20,5,0,15" HorizontalAlignment="Stretch"  IsEnabled="{Binding IsChecked, ElementName=radioButton1}" >
                         <Label   Content="Path to boards.txt" FontSize="10" Padding="0" />
-                        <local:PSelector SelectedPath="{Binding boardTxt_filename}" />
+                        <local:PSelector SelectedPath="{Binding boardTxtPath }" />
                         <CheckBox Content="Copy to project folder? (recommended)" FontSize="10"/>
 
                         <Label   Content="Path to Teensy Core Library" FontSize="10" Padding="0" Margin="0,15,0,0" />

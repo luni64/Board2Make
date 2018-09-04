@@ -24,86 +24,91 @@ namespace ViewModel
         }
 
         #region Properties ------------------------------------------------------
-        public String makefile
-        {
-            get => _makefile;
-            set => SetProperty(ref _makefile, value);
-        }
-        String _makefile;
-
-        public String propFile
-        {
-            get => _propFile;
-            set => SetProperty(ref _propFile, value);
-        }
-        String _propFile;
-
-        public String taskFile
-        {
-            get => _taskFile;
-            set => SetProperty(ref _taskFile, value);
-        }
-        String _taskFile;
+        public String makefile => model.makefile;
+        public String propFile => model.propsFile;
+        public String taskFile => model.tasks_json;
 
         public String makeFileName => Path.Combine(projectPath ?? "", "makefile");
         public String propFileName => Path.Combine(projectPath ?? "", ".vscode", "c_cpp_properties.json");
         public String taskFileName => Path.Combine(projectPath ?? "", ".vscode", "tasks.json");
 
-
-        public String boardTxt_filename
+        public String boardTxtPath
         {
-            get { return _boardTxt_Filename; }
+            get => model.boardTxt.path;
             set
             {
-                if (_boardTxt_Filename != value)
+                if (value != model.boardTxt.path)
                 {
-                    SetProperty(ref _boardTxt_Filename, value);
-                    openFile();
+                    model.boardTxt.path = value.Trim();
+                    OnPropertyChanged();
                 }
             }
         }
-        String _boardTxt_Filename;
-
         public String arduinoPath
         {
-            get => _arduinoPath;
-            set => SetProperty(ref _arduinoPath, value);
-        }
-        string _arduinoPath = "C:\\Arduino\\arduino-1.8.5";
-
-        public String compilerPath
-        {
-            get => _compilerPath;
-            set => SetProperty(ref _compilerPath, value);
-        }
-        string _compilerPath;
-
-        public String corePath
-        {
-            get => _corePath;
-            set => SetProperty(ref _corePath, value);
-        }
-        string _corePath;
-
-        public String projectPath
-        {
-            get => _projectPath;
+            get => model.arduinoBase.path;
             set
             {
-                SetProperty(ref _projectPath, value);
-                OnPropertyChanged("makeFileName");
-                OnPropertyChanged("propFileName");
-                OnPropertyChanged("taskFileName");
+                if (value != model.arduinoBase.path)
+                {
+                    model.arduinoBase.path = value.Trim();
+                    OnPropertyChanged();
+                }
             }
         }
-        string _projectPath;
+        public String compilerPath
+        {
+            get => model.compilerBase.path;
+            set
+            {
+                if (value != model.compilerBase.path)
+                {
+                    model.compilerBase.path = value.Trim();
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public String corePath
+        {
+            get => model.coreBase.path;
+            set
+            {
+                if (value != model.coreBase.path)
+                {
+                    model.coreBase.path = value.Trim();
+                    OnPropertyChanged();
+                }
 
+            }
+        }
+        public String projectPath
+        {
+            get => model.projectBase.path;
+            set
+            {
+                if (value != model.projectBase.path)
+                {
+                    model.projectBase.path = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("makeFileName");
+                    OnPropertyChanged("propFileName");
+                    OnPropertyChanged("taskFileName");
+                }
+            }
+        }
         public String makePath
         {
-            get => _makePath;
-            set => SetProperty(ref _makePath, value);
+            get => model.makeExe.path;
+            set
+            {
+                if (value != model.makeExe.path)
+                {
+                    model.makeExe.path = value.Trim();
+                    OnPropertyChanged();
+                }
+            }
         }
-        string _makePath;
+
 
         public String uploadTyPath
         {
@@ -115,7 +120,7 @@ namespace ViewModel
         public String uploadPjrcPath
         {
             get => _uploadPjrcPath;
-            set => SetProperty(ref _uploadTyPath, value);
+            set => SetProperty(ref _uploadPjrcPath, value);
         }
         string _uploadPjrcPath;
 
@@ -128,7 +133,7 @@ namespace ViewModel
 
         public String outputFilename
         {
-            get { return _outputFilename; }
+            get => _outputFilename;
             set
             {
                 if (_outputFilename != value)
@@ -147,11 +152,14 @@ namespace ViewModel
 
         public BoardVM selectedBoard
         {
-            get { return _selectedBoard; }
+            get => _selectedBoard;
             set
             {
-                SetProperty(ref _selectedBoard, value);
-                //makefile = model.generateMakefile(selectedBoard?.board);
+                if (value != _selectedBoard)
+                {
+                    _selectedBoard = value;
+                    OnPropertyChanged();
+                }
             }
         }
         BoardVM _selectedBoard;
@@ -159,27 +167,26 @@ namespace ViewModel
 
         #endregion
 
-        public void openFile()
+        public void updateBoards()
         {
-            model.parseBoardsTxt(boardTxt_filename);
+            model.parseBoardsTxt(quickSetup);
 
             foreach (var boardVM in boardVMs)  // remove old event handlers
             {
                 foreach (var optionSetVM in boardVM.optionSetVMs)
                 {
-                    optionSetVM.PropertyChanged -= (s, e) => makefile = model.generateMakefile(selectedBoard.board);
+                    optionSetVM.PropertyChanged -= (s, e) => ViewModel_PropertyChanged(s, e);
                 }
             }
-
             boardVMs.Clear();
 
-            foreach (var board in model.boards/*.Where(b => b.core.ToUpper() == "TEENSY3")*/)
+            foreach (var board in model.boards)
             {
                 var boardVM = new BoardVM(board);
                 boardVMs.Add(boardVM);
                 foreach (var optionSetVM in boardVM.optionSetVMs)
                 {
-                    optionSetVM.PropertyChanged += (s, e) => ViewModel_PropertyChanged(s, e);// makefile = model.generateMakefile(selectedBoard.board);
+                    optionSetVM.PropertyChanged += (s, e) => ViewModel_PropertyChanged(s, e);
                 }
             }
             selectedBoard = boardVMs.FirstOrDefault();
@@ -188,58 +195,39 @@ namespace ViewModel
 
         public ViewModel()
         {
-            if (Debugger.IsAttached) CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            if (Debugger.IsAttached)
+            {
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            }
 
             cmdSave = new RelayCommand(doCmdSave);
-
-            var key = Registry.CurrentUser.OpenSubKey("Software\\lunOptics\\Board2Make");
-            _boardTxt_Filename = key?.GetValue("input") as String;
-            _outputFilename = key?.GetValue("output") as String;
-
-            model = new Model(boardTxt_filename);
-            openFile();
-
             PropertyChanged += ViewModel_PropertyChanged;
-
-            OnPropertyChanged("quickSetup");
+            updateBoards();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "makefile":
+                case "arduinoPath":
+                case "boardTxtPath":
+                    updateBoards();
                     break;
 
-                default:
-                    if (quickSetup == true)
-                    {
-                        model.boardTxtPath = FileHelpers.getBoardFromArduino(arduinoPath);
-                        model.corePath = FileHelpers.getCoreFromArduino(arduinoPath);
-                        var toolsPath = FileHelpers.getToolsFromArduino(arduinoPath);
-                        model.compilerPath = Path.Combine(toolsPath, "arm");
-                        model.uploadPathTeensy = toolsPath;
-                    }
-                    else
-                    {
-                        model.boardTxtPath = boardTxt_filename;
-                        model.compilerPath = compilerPath;
-                        model.corePath = corePath;
-                        model.uploadPathTeensy = null;
-                    }
-                    model.uploadPathTY = uploadTyPath;
-                    model.makePath = makePath;
-
-                    makefile = model.generateMakefile(selectedBoard?.board);
-                    propFile = model.generatePropertiesFile();
-                    taskFile = model.generateTasksFile();
+                case "selectedOption":
+                case "selectedBoard":
+                case "quickSetup":
+                case "corePath":
+                case "compilerPath":
+                    model.generateFiles(selectedBoard?.board, quickSetup);
+                    OnPropertyChanged("makefile");
+                    OnPropertyChanged("propFile");
+                    OnPropertyChanged("taskFile");
                     break;
-
             }
-
         }
 
-        private Model model;
+        private Model model = new Model();
     }
 }
 

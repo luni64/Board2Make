@@ -28,22 +28,22 @@ namespace Board2Make
             InitializeComponent();
         }
 
-        private void OpenInput(object sender, RoutedEventArgs e)
-        {
-            var dc = DataContext as ViewModel.ViewModel;
+        //private void OpenInput(object sender, RoutedEventArgs e)
+        //{
+        //    var dc = DataContext as ViewModel.ViewModel;
                  
 
-            var dlg = new OpenFileDialog();
-            if (File.Exists(dc.boardTxt_filename))
-            {
-                dlg.FileName = Path.GetFileName(dc.boardTxt_filename);
-                dlg.InitialDirectory = Path.GetDirectoryName(dc.boardTxt_filename);
-            }
-            if (dlg.ShowDialog() != false)
-            {
-                dc.boardTxt_filename = dlg.FileName;
-            }
-        }
+        //    var dlg = new OpenFileDialog();
+        //    if (File.Exists(dc.boardTxt_filename))
+        //    {
+        //        dlg.FileName = Path.GetFileName(dc.boardTxt_filename);
+        //        dlg.InitialDirectory = Path.GetDirectoryName(dc.boardTxt_filename);
+        //    }
+        //    if (dlg.ShowDialog() != false)
+        //    {
+        //        dc.boardTxt_filename = dlg.FileName;
+        //    }
+        //}
 
 
         private void OpenOutput(object sender, RoutedEventArgs e)
