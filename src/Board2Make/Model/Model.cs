@@ -13,11 +13,11 @@ namespace Board2Make.Model
         public ValidatedPath compilerBase { get; set; }
         public ValidatedPath projectBase { get; set; }
         public ValidatedPath arduinoBase { get; set; }
-        public ValidatedPath coreBase { get; set; } 
+        public ValidatedPath coreBase { get; set; }
         public ValidatedPath makeExe { get; set; }
+        public ValidatedPath uplTyBase { get; set; }
+        public ValidatedPath uplPjrcBase { get; set; }
 
-        public string uploadPathTeensy { get; set; }
-        public string uploadPathTY { get; set; }
 
         public string makefile { get; private set; }
         public string tasks_json { get; private set; }
@@ -27,9 +27,13 @@ namespace Board2Make.Model
 
         public void parseBoardsTxt(bool fromArduino)
         {
+            Console.WriteLine("parseBoardsTxt");
+
             string boardFile = fromArduino ?
                  (arduinoBase.hasError ? null : FileHelpers.getBoardFromArduino(arduinoBase.path)) :
                  (boardTxt.hasError ? null : boardTxt.path);
+
+            boards.Clear();
 
             var content = new FileContent(boardFile);
             if (!content.ParseError)
@@ -47,113 +51,59 @@ namespace Board2Make.Model
 
                 if (fromArduino)
                 {
-                    if (arduinoBase.isValid && makeExe.isValid)
+                    if (arduinoBase.isValid && uplTyBase.isValid)
                     {
-                        Console.WriteLine("generate quick files");
+                        Console.WriteLine("generate files (quick)");
                         string compilerPath = Path.Combine(FileHelpers.getToolsFromArduino(arduinoBase.path), "arm");
                         string corePath = FileHelpers.getCoreFromArduino(arduinoBase.path);
+                        string uplPjcrPath = FileHelpers.getToolsFromArduino(arduinoBase.path);
 
-                        makefile = generateMakefile(board.name, board.optionSets, options, compilerPath, corePath);
+                        makefile = generateMakefile(board.name, board.optionSets, options, compilerPath, corePath, uplTyBase.path, uplPjcrPath);
                         propsFile = generatePropertiesFile(options, compilerPath, corePath);
-                        tasks_json = generateTasksFile(makeExe.path);
                     }
                 }
                 else
                 {
-                    if (compilerBase.isValid && coreBase.isValid && makeExe.isValid)
+                    if (compilerBase.isValid && coreBase.isValid && uplPjrcBase.isValid && uplTyBase.isValid)
                     {
+                        Console.WriteLine("generate files");
                         string compilerPath = compilerBase.path;
                         string corePath = coreBase.path;
 
-                        makefile = generateMakefile(board.name, board.optionSets, options, compilerPath, corePath);
+                        makefile = generateMakefile(board.name, board.optionSets, options, compilerPath, corePath, uplTyBase.path, uplPjrcBase.path);
                         propsFile = generatePropertiesFile(options, compilerPath, corePath);
-                        tasks_json = generateTasksFile(makeExe.path);
                     }
                 }
+            }
+            if (makeExe.isValid)
+            {
+                tasks_json = generateTasksFile(makeExe.path);
             }
         }
 
         public Model()
         {
-            boardTxt = new ValidatedPath(path => File.Exists(path) ? null : "not found");
-            compilerBase = new ValidatedPath(path => Directory.Exists(path) ? null : "not found");
-            projectBase = new ValidatedPath(path => Directory.Exists(path) ? null : "not found");
+            projectBase = new ValidatedPath(path => String.IsNullOrWhiteSpace(path) ? null : (Directory.Exists(path) ? null : "not found"));
             arduinoBase = new ValidatedPath(path => Directory.Exists(path) ? null : "not found");
+            boardTxt = new ValidatedPath(path => File.Exists(path) ? null : "not found");
             coreBase = new ValidatedPath(path => Directory.Exists(path) ? null : "not found");
+            compilerBase = new ValidatedPath(path => Directory.Exists(path) ? null : "not found");
             makeExe = new ValidatedPath(path => File.Exists(path) ? null : "make not found") { path = @"c:\toolchain\make\make.exe" };
-                 
+            uplTyBase = new ValidatedPath(path => Directory.Exists(path) ? null : "TyTools not found") { path = @"c:\toolchain\TyTools" };
+
             arduinoBase.path = @"c:\arduino\arduino-1.8.5";
         }
 
-        private string generateMakefile(string boardName, List<OptionSet> optionSets, Dictionary<string, string> options, string compilerPath, string corePath)
-        {
-            StringBuilder mf = new StringBuilder();
-
-            mf.Append("#******************************************************************************\n");
-            mf.Append("# Generated by Board2Make (https://github.com/luni64/Board2Make)\n");
-            mf.Append("#\n");
-            mf.Append($"# {"Board",-18} {boardName}\n");
-            optionSets.ForEach(o => mf.Append($"# {o.name,-18} {o.selectedOption.name}\n"));
-            mf.Append("#\n");
-            mf.Append($"# {"Boards.txt",-18} {boardTxt.path}\n");
-
-            mf.Append("#\n");
-            mf.Append($"# {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n");
-            mf.Append("#******************************************************************************\n\n");
-
-            mf.Append("TARGET_NAME := newtest\n");
-
-            mf.Append($"GCC_BASE    := {compilerPath}\n");
-            mf.Append($"CORE_BASE   := {corePath}\n");
-            mf.Append($"UPL_PJRC_B  := {uploadPathTeensy}\n");
-            mf.Append($"UPL_TYCMD_B := {uploadPathTY}\n");
-
-            mf.Append($"USR_SRC     := src\n");
-
-            mf.Append(makeEntry("BOARD_ID    := ", "build.board", options) + "\n");
-            mf.Append($"\n");
-
-            mf.Append(makeEntry("FLAGS_CPU   := ", "build.flags.cpu", options) + "\n");
-            mf.Append(makeEntry("FLAGS_OPT   := ", "build.flags.optimize", options) + "\n");
-            mf.Append(makeEntry("FLAGS_COM   := ", "build.flags.common", options) + makeEntry(" ", "build.flags.dep", options) + "\n");
-            mf.Append(makeEntry("FLAGS_LSP   := ", "build.flags.ldspecs", options) + "\n");
-
-            mf.Append("\n");
-            mf.Append(makeEntry("FLAGS_CPP   := ", "build.flags.cpp", options) + "\n");
-            mf.Append(makeEntry("FLAGS_C     := ", "build.flags.c", options) + "\n");
-            mf.Append(makeEntry("FLAGS_S     := ", "build.flags.S", options) + "\n");
-            mf.Append(makeEntry("FLAGS_LD    := ", "build.flags.ld", options) + "\n");
-
-            mf.Append("\n");
-            mf.Append(makeEntry("LIBS        := ", "build.flags.libs", options) + "\n");
-            mf.Append(makeEntry("LD_SCRIPT   := ", "build.mcu", options) + ".ld\n");
-
-            mf.Append("\n");
-            mf.Append(makeEntry("DEFINES     := ", "build.flags.defs", options) + "\n");
-            mf.Append("DEFINES     += ");
-            mf.Append(makeEntry("-DF_CPU=", "build.fcpu", options) + " " + makeEntry("-D", "build.usbtype", options) + " " + makeEntry("-DLAYOUT_", "build.keylayout", options) + "\n");
-
-            mf.Append($"\n");
-            mf.Append("CPP_FLAGS   := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_CPP)\n");
-            mf.Append("C_FLAGS     := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_C)\n");
-            mf.Append("S_FLAGS     := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_S)\n");
-            mf.Append("LD_FLAGS    := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_LSP) $(FLAGS_LD)\n");
-            mf.Append("AR_FLAGS    := rcs\n");
-            mf.Append(mkf);
-
-            return mf.ToString();
-        }
         private string generateTasksFile(string makePath)
         {
             var tasks = new tasksJson()
             {
                 presentation = new Presentation(),
-                problemMatcher = new ProblemMatcher(),
                 tasks = new List<Task>()
                 {
                     new Task()
                     {
-                        label = "Build all",
+                        label = "Build",
                         group = new Group(),
                         command = makePath.Replace('\\','/'),
                         args = new List<string>{"all"},
@@ -200,7 +150,7 @@ namespace Board2Make.Model
                 {
                     new Configuration()
                     {
-                        name = "Teensy",
+                        name = "VisualTeensy",
                         compilerPath =  Path.Combine(compilerPath ,"bin","arm-none-eabi-gcc.exe").Replace('\\','/'),
                         intelliSenseMode = "gcc-x64",
                         includePath = new List<string>()
@@ -224,18 +174,61 @@ namespace Board2Make.Model
 
             return FileHelpers.FormatOutput(new JavaScriptSerializer().Serialize(props));
         }
-        private string makeEntry(String txt, String key, Dictionary<String, String> options)
+        private string generateMakefile(string boardName, List<OptionSet> optionSets, Dictionary<string, string> options, string compilerPath, string corePath, string uplTyPath, string uplPjrcPath)
         {
-            if (options.ContainsKey(key))
-            {
-                return $"{txt}{options[key]}";
-            }
-            else
-            {
-                return "";
-            }
+            StringBuilder mf = new StringBuilder();
+
+            mf.Append("#******************************************************************************\n");
+            mf.Append("# Generated by Board2Make (https://github.com/luni64/Board2Make)\n");
+            mf.Append("#\n");
+            mf.Append($"# {"Board",-18} {boardName}\n");
+            optionSets.ForEach(o => mf.Append($"# {o.name,-18} {o.selectedOption.name}\n"));
+            mf.Append("#\n");
+            mf.Append($"# {"Boards.txt",-18} {boardTxt.path}\n");
+
+            mf.Append("#\n");
+            mf.Append($"# {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n");
+            mf.Append("#******************************************************************************\n\n");
+
+            mf.Append("TARGET_NAME := newtest\n\n");
+
+            mf.Append(makeEntry("BOARD_ID    := ", "build.board", options) + "\n");
+            mf.Append($"CORE_BASE   := {corePath}\n");
+            mf.Append($"GCC_BASE    := {compilerPath}\n");
+            mf.Append($"UPL_PJRC_B  := {uplPjrcPath}\n");
+            mf.Append($"UPL_TYCMD_B := {uplTyPath}\n\n");
+         
+            mf.Append(makeEntry("FLAGS_CPU   := ", "build.flags.cpu", options) + "\n");
+            mf.Append(makeEntry("FLAGS_OPT   := ", "build.flags.optimize", options) + "\n");
+            mf.Append(makeEntry("FLAGS_COM   := ", "build.flags.common", options) + makeEntry(" ", "build.flags.dep", options) + "\n");
+            mf.Append(makeEntry("FLAGS_LSP   := ", "build.flags.ldspecs", options) + "\n");
+
+            mf.Append("\n");
+            mf.Append(makeEntry("FLAGS_CPP   := ", "build.flags.cpp", options) + "\n");
+            mf.Append(makeEntry("FLAGS_C     := ", "build.flags.c", options) + "\n");
+            mf.Append(makeEntry("FLAGS_S     := ", "build.flags.S", options) + "\n");
+            mf.Append(makeEntry("FLAGS_LD    := ", "build.flags.ld", options) + "\n");
+
+            mf.Append("\n");
+            mf.Append(makeEntry("LIBS        := ", "build.flags.libs", options) + "\n");
+            mf.Append(makeEntry("LD_SCRIPT   := ", "build.mcu", options) + ".ld\n");
+
+            mf.Append("\n");
+            mf.Append(makeEntry("DEFINES     := ", "build.flags.defs", options) + "\n");
+            mf.Append("DEFINES     += ");
+            mf.Append(makeEntry("-DF_CPU=", "build.fcpu", options) + " " + makeEntry("-D", "build.usbtype", options) + " " + makeEntry("-DLAYOUT_", "build.keylayout", options) + "\n");
+
+            mf.Append($"\n");
+            mf.Append("CPP_FLAGS   := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_CPP)\n");
+            mf.Append("C_FLAGS     := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_C)\n");
+            mf.Append("S_FLAGS     := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_COM) $(DEFINES) $(FLAGS_S)\n");
+            mf.Append("LD_FLAGS    := $(FLAGS_CPU) $(FLAGS_OPT) $(FLAGS_LSP) $(FLAGS_LD)\n");
+            mf.Append("AR_FLAGS    := rcs\n");
+            mf.Append(mkf);
+
+            return mf.ToString();
         }
-               
+
         const string mkf =
                "\n" +
                "USR_SRC     := src\n" +
@@ -249,7 +242,7 @@ namespace Board2Make.Model
                "TARGET_ELF  := $(BIN)\\$(TARGET_NAME).elf\n" +
                "TARGET_LST  := $(BIN)\\$(TARGET_NAME).lst\n" +
                "\n\n" +
-            
+
                "#******************************************************************************\n" +
                "# BINARIES\n" +
                "#******************************************************************************\n" +
@@ -262,15 +255,15 @@ namespace Board2Make.Model
                "UPL_PJRC    := \"$(UPL_PJRC_B)\\teensy_post_compile\" -test -file=$(TARGET_NAME) -path=$(BIN) -tools=\"$(UPL_PJRC_B)\" -board=$(BOARD_ID) -reboot\n" +
                "UPL_TYCMD   := $(UPL_TYCMD_B)\\tyCommanderC upload $(TARGET_HEX) --autostart\n" +
                "\n" +
-            
+
                "#******************************************************************************\n" +
                "# Source and Include Files\n" +
                "#******************************************************************************\n" +
                "# Recursively create list of source and object files in USR_SRC and CORE_SRC \n" +
                "# and corresponding subdirectories. \n" +
                "# The function rwildcard is taken from http://stackoverflow.com/a/12959694)\n\n" +
-              
-               "rwildcard =$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))\n\n" +              
+
+               "rwildcard =$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))\n\n" +
 
                "#User Sources -----------------------------------------------------------------\n" +
                "USR_C_FILES    := $(call rwildcard,$(USR_SRC)/,*.c)\n" +
@@ -295,28 +288,28 @@ namespace Board2Make.Model
                "#******************************************************************************\n" +
                "\n" +
                ".PHONY: all rebuild upload uploadTy clean cleanUser cleanCore\n\n" +
-               
+
                "all:     $(TARGET_LST) $(TARGET_HEX)\n" +
                "rebuild: cleanUser all\n" +
                "clean:   cleanUser cleanCore\n\n" +
-               
+
                "upload: $(TARGET_LST) $(TARGET_HEX)\n" +
                   "\t@$(UPL_PJRC)\n\n" +
-               
+
                "uploadTy: $(TARGET_LST) $(TARGET_HEX)\n" +
                   "\t@$(UPL_TYCMD)\n\n" +
-               
+
 
                "# Core library ----------------------------------------------------------------\n" +
                "$(CORE_BIN)/%.o: $(CORE_SRC)/%.S\n" +
                   "\t@echo [ASM] CORE $(notdir $<)\n" +
                   "\t@if not exist $(dir $@)  @mkdir \"$(dir $@)\"\n" +
-                  "\t@\"$(CC)\" $(S_FLAGS) $(INCLUDE) -o $@ -c $< \n\n" +               
+                  "\t@\"$(CC)\" $(S_FLAGS) $(INCLUDE) -o $@ -c $< \n\n" +
 
                "$(CORE_BIN)/%.o: $(CORE_SRC)/%.c\n" +
                   "\t@echo [CC]  CORE $(notdir $<)\n" +
                   "\t@if not exist $(dir $@)  @mkdir \"$(dir $@)\"\n" +
-                  "\t@\"$(CC)\" $(C_FLAGS) $(INCLUDE) -o $@ -c $< \n\n" +               
+                  "\t@\"$(CC)\" $(C_FLAGS) $(INCLUDE) -o $@ -c $< \n\n" +
 
                "$(CORE_BIN)/%.o: $(CORE_SRC)/%.cpp\n" +
                   "\t@echo [CPP] CORE $(notdir $<)\n" +
@@ -326,25 +319,25 @@ namespace Board2Make.Model
                "$(CORE_LIB) : $(CORE_OBJ)\n" +
                   "\t@echo [AR]  $@\n" +
                   "\t@$(AR) $(AR_FLAGS) $@ $^\n" +
-                  "\t@echo Teensy core built successfully &&echo.\n\n" +    
-            
+                  "\t@echo Teensy core built successfully &&echo.\n\n" +
+
 
                "# Handle user sources ---------------------------------------------------------\n" +
                   "$(USR_BIN)/%.o: $(USR_SRC)/%.S\n" +
                   "\t@echo [ASM] $<\n" +
                   "\t@if not exist $(dir $@)  @mkdir \"$(dir $@)\"\n" +
                   "\t@\"$(CC)\" $(S_FLAGS) $(INCLUDE) -o $@ -c $<\n\n" +
-               
+
                "$(USR_BIN)/%.o: $(USR_SRC)/%.c\n" +
                   "\t@echo [CC]  $(notdir $<)\n" +
                   "\t@if not exist $(dir $@)  @mkdir \"$(dir $@)\"\n" +
                   "\t@\"$(CC)\" $(C_FLAGS) $(INCLUDE) -o \"$@\" -c $<\n\n" +
-               
+
                "$(USR_BIN)/%.o: $(USR_SRC)/%.cpp\n" +
                   "\t@echo [CPP] $<\n" +
                   "\t@if not exist $(dir $@)  @mkdir \"$(dir $@)\"\n" +
                   "\t@\"$(CXX)\" $(CPP_FLAGS) $(INCLUDE) -o \"$@\" -c $<\n\n" +
-               
+
 
                "# Linking ---------------------------------------------------------------------\n" +
                "$(TARGET_ELF): $(CORE_LIB) $(USR_OBJ)\n" +
@@ -368,19 +361,31 @@ namespace Board2Make.Model
                "cleanUser:\n" +
                   "\t@echo Cleaning user binaries...\n" +
                   "\t@if exist $(USR_BIN) rd /s/q \"$(USR_BIN)\"\n\n" +
-               
+
                "\t@if exist $(TARGET_HEX) del  $(TARGET_HEX)\n" +
                   "\t@if exist $(TARGET_ELF) del  $(TARGET_ELF)\n" +
                   "\t@if exist $(TARGET_LST) del  $(TARGET_LST)\n\n" +
-               
+
                "cleanCore:\n" +
                   "\t@echo Cleaning core binaries...\n" +
                   "\t@if exist $(CORE_BIN) rd /s/q \"$(CORE_BIN)\"\n" +
                   "\t@if exist $(CORE_LIB) del  \"$(CORE_LIB)\"\n\n" +
-               
+
 
                "# compiler generated dependency info ------------------------------------------\n" +
                "-include $(CORE_OBJ:.o=.d)\n" +
                "-include $(USR_OBJ:.o=.d)\n";
+
+        private string makeEntry(String txt, String key, Dictionary<String, String> options)
+        {
+            if (options.ContainsKey(key))
+            {
+                return $"{txt}{options[key]}";
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 }

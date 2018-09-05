@@ -53,3 +53,4 @@ src/Board2Make.sdf
 *.config
 *.db
 /src/Board2Make.VC.VC.opendb
+/src/packages/Microsoft.Net.Compilers.2.9.0.deleteme

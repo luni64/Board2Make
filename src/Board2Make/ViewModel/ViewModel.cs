@@ -15,25 +15,64 @@ namespace ViewModel
         public RelayCommand cmdSave { get; private set; }
         void doCmdSave(object o)
         {
-            if (outputFilename != null)
+            if (model.projectBase.isValid)
             {
-                using (TextWriter writer = new StreamWriter(outputFilename))
+                string projectPath = model.projectBase.path;
+                string settingsPath = Path.Combine(projectPath, ".vscode");
+                string srcPath = Path.Combine(projectPath, "src");
+
+                Directory.CreateDirectory(settingsPath);
+                Directory.CreateDirectory(srcPath);
+
+                string makefilePath = Path.Combine(projectPath, "makefile");
+                using (TextWriter writer = new StreamWriter(makefilePath))
                 {
                     writer.Write(makefile);
                 }
+
+                string taskFilePath = Path.Combine(settingsPath, "tasks.json");
+                using (TextWriter writer = new StreamWriter(taskFilePath))
+                {
+                    writer.Write(taskFile);
+                }
+
+                string propFilePath = Path.Combine(settingsPath, "c_cpp_properties.json");
+                using (TextWriter writer = new StreamWriter(propFilePath))
+                {
+                    writer.Write(propFile);
+                }
+                                
+                string mainPath = Path.Combine(srcPath, "main.cpp");
+                
+                using (TextWriter writer = new StreamWriter(mainPath))
+                {
+                    writer.Write(mainCpp);
+                }
+
+
+
             }
+
         }
+
+
+        const string mainCpp =
+            "#include \"arduino.h\"\n\n" +
+            "void setup()\n" +
+            "{\n" +
+            "\tpinMode(LED_BUILTIN,OUTPUT);\n" +
+            "}\n\n" +
+
+            "void loop()\n" +
+            "{\n" +
+                "\tdigitalWriteFast(LED_BUILTIN,!digitalReadFast(LED_BUILTIN));\n" +
+                "\tdelay(250);\n" +
+            "}\n";
 
 
         #region IDataErrorInfo ------------------------------------------------
 
-        public string Error
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string Error => throw new NotImplementedException();
 
         public string this[string columnName]
         {
@@ -49,6 +88,26 @@ namespace ViewModel
 
                     case "arduinoPath":
                         error = quickSetup ? model.arduinoBase.ValidationResult : null;
+                        break;
+
+                    case "boardTxtPath":
+                        error = quickSetup ? null : model.boardTxt.ValidationResult;
+                        break;
+
+                    case "corePath":
+                        error = quickSetup ? null : model.coreBase.ValidationResult;
+                        break;
+
+                    case "compilerPath":
+                        error = quickSetup ? null : model.compilerBase.ValidationResult;
+                        break;
+
+                    case "makePath":
+                        error = model.makeExe.ValidationResult;
+                        break;
+
+                    case "uploadTyPath":
+                        error = String.IsNullOrEmpty(uploadTyPath) ? null : model.uplTyBase.ValidationResult;
                         break;
 
                     default:
@@ -72,15 +131,18 @@ namespace ViewModel
         public String propFileName => Path.Combine(projectPath ?? "", ".vscode", "c_cpp_properties.json");
         public String taskFileName => Path.Combine(projectPath ?? "", ".vscode", "tasks.json");
 
-        public String boardTxtPath
+        public String projectPath
         {
-            get => model.boardTxt.path;
+            get => model.projectBase.path;
             set
             {
-                if (value != model.boardTxt.path)
+                if (value != model.projectBase.path)
                 {
-                    model.boardTxt.path = value.Trim();
+                    model.projectBase.path = value.Trim();
                     OnPropertyChanged();
+                    OnPropertyChanged("makeFileName");
+                    OnPropertyChanged("propFileName");
+                    OnPropertyChanged("taskFileName");
                 }
             }
         }
@@ -93,18 +155,20 @@ namespace ViewModel
                 {
                     model.arduinoBase.path = value.Trim();
                     OnPropertyChanged();
+                    updateBoards();
                 }
             }
         }
-        public String compilerPath
+        public String boardTxtPath
         {
-            get => model.compilerBase.path;
+            get => model.boardTxt.path;
             set
             {
-                if (value != model.compilerBase.path)
+                if (value != model.boardTxt.path)
                 {
-                    model.compilerBase.path = value.Trim();
+                    model.boardTxt.path = value.Trim();
                     OnPropertyChanged();
+                    updateBoards();
                 }
             }
         }
@@ -117,22 +181,21 @@ namespace ViewModel
                 {
                     model.coreBase.path = value.Trim();
                     OnPropertyChanged();
+                    updateFiles();
                 }
 
             }
         }
-        public String projectPath
+        public String compilerPath
         {
-            get => model.projectBase.path;
+            get => model.compilerBase.path;
             set
             {
-                if (value != model.projectBase.path)
+                if (value != model.compilerBase.path)
                 {
-                    model.projectBase.path = value;
+                    model.compilerBase.path = value.Trim();
                     OnPropertyChanged();
-                    OnPropertyChanged("makeFileName");
-                    OnPropertyChanged("propFileName");
-                    OnPropertyChanged("taskFileName");
+                    updateFiles();
                 }
             }
         }
@@ -145,6 +208,7 @@ namespace ViewModel
                 {
                     model.makeExe.path = value.Trim();
                     OnPropertyChanged();
+                    updateFiles();
                 }
             }
         }
@@ -152,8 +216,15 @@ namespace ViewModel
 
         public String uploadTyPath
         {
-            get => _uploadTyPath;
-            set => SetProperty(ref _uploadTyPath, value);
+            get => model.uplTyBase.path;
+            set
+            {
+                if(value != model.uplTyBase.path)
+                {
+                    model.uplTyBase.path = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         string _uploadTyPath;
 
@@ -170,7 +241,8 @@ namespace ViewModel
             set
             {
                 SetProperty(ref _quickSetup, value);
-                OnPropertyChanged("ArduinoPath");
+                updateBoards();
+                OnPropertyChanged("");
             }
         }
         bool _quickSetup = true;
@@ -190,7 +262,7 @@ namespace ViewModel
         }
         String _outputFilename;
 
-        public String Title => "lunOptics - Board2Make";
+        public String Title => "lunOptics - VisualTeensy V0.1";
 
         public ObservableCollection<BoardVM> boardVMs { get; } = new ObservableCollection<BoardVM>();
 
@@ -203,6 +275,7 @@ namespace ViewModel
                 {
                     _selectedBoard = value;
                     OnPropertyChanged();
+                    updateFiles();
                 }
             }
         }
@@ -210,6 +283,15 @@ namespace ViewModel
 
 
         #endregion
+
+        public void updateFiles()
+        {
+            model.generateFiles(selectedBoard?.board, quickSetup);
+            OnPropertyChanged("makefile");
+            OnPropertyChanged("propFile");
+            OnPropertyChanged("taskFile");
+        }
+
 
         public void updateBoards()
         {
@@ -219,7 +301,7 @@ namespace ViewModel
             {
                 foreach (var optionSetVM in boardVM.optionSetVMs)
                 {
-                    optionSetVM.PropertyChanged -= (s, e) => ViewModel_PropertyChanged(s, e);
+                    optionSetVM.PropertyChanged -= (s, e) => updateFiles();
                 }
             }
             boardVMs.Clear();
@@ -230,7 +312,7 @@ namespace ViewModel
                 boardVMs.Add(boardVM);
                 foreach (var optionSetVM in boardVM.optionSetVMs)
                 {
-                    optionSetVM.PropertyChanged += (s, e) => ViewModel_PropertyChanged(s, e);
+                    optionSetVM.PropertyChanged += (s, e) => updateFiles();
                 }
             }
             selectedBoard = boardVMs.FirstOrDefault();
@@ -245,31 +327,11 @@ namespace ViewModel
             }
 
             cmdSave = new RelayCommand(doCmdSave);
-            PropertyChanged += ViewModel_PropertyChanged;
+
             updateBoards();
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "arduinoPath":
-                case "boardTxtPath":
-                    updateBoards();
-                    break;
 
-                case "selectedOption":
-                case "selectedBoard":
-                case "quickSetup":
-                case "corePath":
-                case "compilerPath":
-                    model.generateFiles(selectedBoard?.board, quickSetup);
-                    OnPropertyChanged("makefile");
-                    OnPropertyChanged("propFile");
-                    OnPropertyChanged("taskFile");
-                    break;
-            }
-        }
 
         private Model model = new Model();
     }

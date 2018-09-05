@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Board2Make.Model
 {
@@ -40,7 +36,7 @@ namespace Board2Make.Model
         public string version => "2.0.0";
         public string type => "shell";
         public Presentation presentation { get; set; }
-        public ProblemMatcher problemMatcher { get; set; }
+        public string problemMatcher => "$gcc";
         public List<Task> tasks;
     }
 }

@@ -48,19 +48,23 @@ namespace Board2Make
 
         private void OpenOutput(object sender, RoutedEventArgs e)
         {
-            var dc = DataContext as ViewModel.ViewModel;
+            //var dc = DataContext as ViewModel.ViewModel;
 
-            var dlg = new SaveFileDialog();
-            if (File.Exists(dc.outputFilename))
-            {
-                dlg.FileName = Path.GetFileName(dc.outputFilename);
-                dlg.InitialDirectory = Path.GetDirectoryName(dc.outputFilename);
-            }
-            if (dlg.ShowDialog() != false)
-            {
-                dc.outputFilename = dlg.FileName;
-                dc.cmdSave.Execute(null);
-            }
+            //var dlg = new SaveFileDialog();
+            //if (File.Exists(dc.outputFilename))
+            //{
+            //    dlg.FileName = Path.GetFileName(dc.outputFilename);
+            //    dlg.InitialDirectory = Path.GetDirectoryName(dc.outputFilename); 
+            //}
+            //if (dlg.ShowDialog() != false)
+            //{
+            //    dc.outputFilename = dlg.FileName;
+            //    dc.cmdSave.Execute(null);
+            //}
+
+            var dlg = new SaveProjectWin();
+            dlg.ShowDialog();
+
         }
     }
 }

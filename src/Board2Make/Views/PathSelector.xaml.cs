@@ -32,11 +32,15 @@ namespace Board2Make
             {
                 var dlg = new System.Windows.Forms.OpenFileDialog();
                 //fileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                dlg.InitialDirectory = Path.GetDirectoryName(SelectedPath);
 
-                dlg.FileName = Path.GetFileName(SelectedPath);
+                if (Directory.Exists(SelectedPath))
+                {
 
+                    dlg.InitialDirectory = Path.GetDirectoryName(SelectedPath);
 
+                    dlg.FileName = Path.GetFileName(SelectedPath);
+
+                }
 
 
 
