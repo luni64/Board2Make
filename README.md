@@ -1,4 +1,4 @@
-
+Please note: Board2Make is no longer maintained. A follow project can be found here: (https://github.com/luni64/VisualTeensy)
 
 # Board2Make
 
